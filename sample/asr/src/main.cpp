@@ -401,10 +401,61 @@ static void* asr_thread(void* arg) {
 int main(int argc, char** argv) {
     FILE* err_output_file = stderr;
 
+    cout << "my main is going ....." << endl;
+    std::string  name;
+    bool bdir_ok = false;
+    bool bfile_ok = false;
+    while(1)
+    {
+        if(bdir_ok == false)
+        {
+            name.clear();
+            cout << "please enter a directory name \n" << endl;
+            cin >> name;
+
+            if(access(name.c_str(), F_OK) == -1)
+            {
+                cout << "can not find the dir: " << name << "\n" << endl;
+                continue;
+            }
+
+            bdir_ok = true;
+            cout << "we got the directory : " << name << " ^-^ \n";
+            //
+            snprintf(audio_dir, 256, "./%s/", name.c_str());
+        }
+
+        if(bfile_ok == false)
+        {
+            name.clear();
+            cout << "please enter the audio_file name \n" << endl;
+            cin >> name;
+
+            snprintf(file_names[0], 256, "%s/%s.pcm", audio_dir, name.c_str());
+            if(access(file_names[0], F_OK) == -1)
+            {
+                cout << "can not find the file: " << name << "\n" << endl;
+                continue;
+            }
+
+            bfile_ok = true;
+            cout << "we got the file : " << name << " \n";
+            snprintf(file_names[0], 256, "%s/%s.pcm", audio_dir, name.c_str());
+        }
+
+        name.clear();
+        cout << "please enter \'go\', we will start !" << endl;
+        cin >> name;
+        if(name == "go")
+        {
+            break;
+        }
+    }
+
     for (int i = 0; i < THREAD_NUM; ++i) {
         thread_sequeces[i] = i;
         pthread_mutex_init(&thread_mutexes[i], NULL);
-        snprintf(file_names[i], 256, "%s/16k-%d.pcm", audio_dir, i);
+        //snprintf(file_names[i], 256, "%s/16k-%d.pcm", audio_dir, i);
         // 新线程中开启每个文件的识别
         int32_t ret = pthread_create(&thread_ids[i], NULL, asr_thread, static_cast<void*>(thread_sequeces + i)); // thread_sequeces[i]的指针
         if (ret != 0) {
