@@ -177,7 +177,7 @@ void asr_output_callback(bds::BDSSDKMessage& message, void* user_arg) {
 
     int status = 0;
 
-    FILE* result_out_file = fopen(result_names[0], "rb");
+    FILE* result_out_file = fopen(result_names[0], "wb");
 
     if (!message.get_parameter(bds::CALLBACK_ASR_STATUS, status)) {
         fprintf(err_output_file, "get status failed\n");
@@ -220,7 +220,7 @@ void asr_output_callback(bds::BDSSDKMessage& message, void* user_arg) {
             fflush(result_output_file);
             if(result_out_file != NULL)
             {
-                fprintf(result_output_file, "[result]: %s\n", json_result.c_str());
+                fprintf(result_out_file, "[result]: %s\n", json_result.c_str());
             }
             else
             {

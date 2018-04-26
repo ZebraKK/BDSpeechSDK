@@ -1,0 +1,1 @@
+[result]: {"results_recognition":["小猪佩奇全集"],"origin_result":{"corpus_no":6548689039560843037,"err_no":0,"result":{"word":["小猪佩奇全集"]},"sn":"8235AB4F-D040-434F-80EE-C2F6E3FB8EF1","voice_energy":24059.156250},"sn_start_time":"00:00","sn_end_time":"00:01"}
