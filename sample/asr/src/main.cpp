@@ -27,6 +27,7 @@ pthread_mutex_t thread_mutexes[THREAD_NUM]; // 锁信息，用于同步SDK内部
 bool asr_finish_tags[THREAD_NUM] = { 0 }; //线程是否结束识别
 int thread_sequeces[THREAD_NUM] = { 0 };
 char file_names[THREAD_NUM][256]; // 每个线程识别的文件名
+char result_names[THREAD_NUM][256]; // 识别结果记录文件
 
 /**
  * 格式化时间
@@ -176,6 +177,8 @@ void asr_output_callback(bds::BDSSDKMessage& message, void* user_arg) {
 
     int status = 0;
 
+    FILE* result_out_file = fopen(result_names[0], "rb");
+
     if (!message.get_parameter(bds::CALLBACK_ASR_STATUS, status)) {
         fprintf(err_output_file, "get status failed\n");
         return;
@@ -215,6 +218,14 @@ void asr_output_callback(bds::BDSSDKMessage& message, void* user_arg) {
             message.get_parameter(bds::CALLBACK_ASR_RESULT, json_result);
             fprintf(result_output_file, "final result: %s\n", json_result.c_str());
             fflush(result_output_file);
+            if(result_out_file != NULL)
+            {
+                fprintf(result_output_file, "[result]: %s\n", json_result.c_str());
+            }
+            else
+            {
+                fprintf(result_output_file, "result file %s open failed !!!!!!!!\n", result_names[0]);
+            }
             break;
         }
 
@@ -441,6 +452,7 @@ int main(int argc, char** argv) {
             bfile_ok = true;
             cout << "we got the file : " << name << " \n";
             snprintf(file_names[0], 256, "%s/%s.pcm", audio_dir, name.c_str());
+            snprintf(result_names[0], 256, "./result/%s.txt", name.c_str());
         }
 
         name.clear();
